@@ -1,9 +1,10 @@
-﻿
-/// <reference path="sav_/Scripts/CrmWebAPIToolkit.js" />
 
+/// <reference path="sav_/Scripts/CrmWebAPIToolkit.js" />
+var formContext;
 Address1s = [];
-function GetAddress1(oEntityLogicalName, oAttributeName, fieldName) {
+function GetAddress1(ExecutionContext,oEntityLogicalName, oAttributeName, fieldName) {
     debugger;
+    formContext=ExecutionContext.getFormContext();
     var odataEntity = oEntityLogicalName;
     var odataSelect = "$select=" + oAttributeName;
     CrmWebAPIToolkit.WebAPI.RetrieveMultiple(odataEntity, odataSelect,
@@ -12,7 +13,8 @@ function GetAddress1(oEntityLogicalName, oAttributeName, fieldName) {
                for (var x = 0; x < results.length; x++) {
                    Address1s.push(results[x][oAttributeName])
                }
-           Xrm.Page.getControl(fieldName).addOnKeyPress(keyPressFcn);
+           
+           formContext.getControl(fieldName).addOnKeyPress(keyPressFcn);
        },
        function (error) {
            Xrm.Navigation.openAlertDialog(error.message);
@@ -24,7 +26,7 @@ function GetAddress1(oEntityLogicalName, oAttributeName, fieldName) {
 var keyPressFcn = function (ext) {
     debugger;
     try {
-        var userInput = Xrm.Page.getControl(ext.getEventSource().getName()).getValue();
+        var userInput = formContext.getControl(ext.getEventSource().getName()).getValue();
         resultSet = {
             results: new Array(),
         };
